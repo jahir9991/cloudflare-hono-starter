@@ -1,4 +1,4 @@
-on:
+  on:
   push:
     branches:
       - staging
@@ -11,14 +11,15 @@ jobs:
 
       - name: Genarate wrangler.toml
         run: |
-          envsubst "`printf '${%s} ' $(sh -c "env|cut -d'=' -f1")`" < ./prod.wrangler.toml > ./wrangler.toml
+          envsubst "`printf '${%s} ' $(sh -c "env|cut -d'=' -f1")`" < ./example.wrangler.toml > ./wrangler.toml
           echo "$(cat ./wrangler.toml)"
         env:
+          ENVIRONMENT: staging
+          BASE_URL: staging.example.com
           account_id: ${{ secrets.CF_ACCOUNT_ID }}
-          db_staging: hono-production
-          database_id_staging: ${{ secrets.database_id_staging }}
-          db_production: hono-staging
-          database_id_production: ${{ secrets.database_id_production }}
+          database_name: hono-staging
+          database_id: ${{ secrets.database_id_staging }}
+         
 
       - name: Deploy
         uses: cloudflare/wrangler-action@v3
@@ -26,4 +27,4 @@ jobs:
           apiToken: ${{ secrets.CF_API_TOKEN }}
           accountId: '${{ secrets.CF_ACCOUNT_ID }}'
           command: deploy
-          environment: production
+          # environment: staging

@@ -1,33 +1,29 @@
 name = "hono"
 main = "src/index.ts"
 compatibility_date = "2023-01-01"
-account_id = "{account_id}"
+account_id = "$account_id"
+compatibility_flags = ["nodejs_compat"]
 
-
-[dev]
-ip = "127.0.0.1"
-port = 8081
-local_protocol = "http"
-
-
-
-# fro dev.....
-vars = { ENVIRONMENT = "dev" ,BASE_URL = "dev.example.com"}
-d1_databases =[{ binding = "DB" ,database_name = "hono-staging" , database_id = "eb9521ba-38e2dcf99"  , migrations_dir = "migrationsD1" }]
-
-
-[env.staging]
-vars = { ENVIRONMENT = "staging" ,BASE_URL = "staging.example.com"}
-d1_databases =[{ binding = "DB" ,database_name = "hono-staging" , database_id = "eb9521ba-99"  , migrations_dir = "migrationsD1" }]
-
-
-[env.production]
-vars = { ENVIRONMENT = "production" ,BASE_URL = "example.com"}
-d1_databases =[{ binding = "DB" ,database_name = "hono-production" , database_id = "019b018774c4c4" , migrations_dir = "migrationsD1" }]
+#for dev 
+# [dev]
+# ip = "127.0.0.1"
+# port = 8081
+# local_protocol = "http"
 
 
 
-# [[r2_buckets]]
-# binding = "MY_BUCKET"
-# bucket_name = "my-bucket"
 
+
+vars = { ENVIRONMENT = "$ENVIRONMENT" ,BASE_URL = "$BASE_URL"}
+d1_databases =[{ binding = "DB" ,database_name = "$database_name" , database_id = "$database_id" , migrations_dir = "migrationsD1" }]
+
+
+
+
+
+
+# for env manage
+
+# [env.staging]
+# vars = { ENVIRONMENT = "staging" ,BASE_URL = "staging.example.com"}
+# d1_databases =[{ binding = "DB" ,database_name = "hono-staging" , database_id = "eb9521ba-99"  , migrations_dir = "migrationsD1" }]
