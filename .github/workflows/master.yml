@@ -7,16 +7,23 @@ jobs:
     runs-on: ubuntu-latest
     name: Deploy
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - name: Genarate .toml
+      - name: Genarate wrangler.toml
         run: |
-          cp prod.wrangler.toml wrangler.toml 
+          envsubst "`printf '${%s} ' $(sh -c "env|cut -d'=' -f1")`" < ./prod.wrangler.toml > ./wrangler.toml
+          echo "$(cat ./wrangler.toml)"
+        env:
+          account_id: ${{ secrets.CF_ACCOUNT_ID }}
+          db_staging: hono-production
+          database_id_staging: ${{ secrets.database_id_staging }}
+          db_production: hono-staging
+          database_id_production: ${{ secrets.database_id_production }}
 
       - name: Deploy
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
-          accountId: "${{ secrets.CF_ACCOUNT_ID }}"
+          accountId: '${{ secrets.CF_ACCOUNT_ID }}'
           command: deploy
           environment: production

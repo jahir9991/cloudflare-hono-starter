@@ -1,0 +1,18 @@
+name = "hono"
+main = "src/index.ts"
+compatibility_date = "2023-01-01"
+account_id = "556675f35212283cadf2ad1dbb0da3f0"
+
+
+compatibility_flags = ["nodejs_compat"]
+
+
+[env.staging]
+vars = { ENVIRONMENT = "staging" ,BASE_URL = "staging.example.com"}
+d1_databases =[{ binding = "DB" ,database_name = "hono-staging" , database_id = "eb9521ba-93c0-42b3-af2d-6e438e2dcf99" , migrations_dir = "migrationsD1" }]
+
+
+[env.production]
+vars = { ENVIRONMENT = "production" ,BASE_URL = "example.com"}
+d1_databases =[{ binding = "DB" ,database_name = "hono-production" , database_id = "01ff53bc-21d6-47c2-bb4f-9b018774c4c4" , migrations_dir = "migrationsD1" }]
+

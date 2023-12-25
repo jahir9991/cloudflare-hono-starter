@@ -1,0 +1,33 @@
+name = "hono"
+main = "src/index.ts"
+compatibility_date = "2023-01-01"
+account_id = "{account_id}"
+
+
+[dev]
+ip = "127.0.0.1"
+port = 8081
+local_protocol = "http"
+
+
+
+# fro dev.....
+vars = { ENVIRONMENT = "dev" ,BASE_URL = "dev.example.com"}
+d1_databases =[{ binding = "DB" ,database_name = "hono-staging" , database_id = "eb9521ba-38e2dcf99"  , migrations_dir = "migrationsD1" }]
+
+
+[env.staging]
+vars = { ENVIRONMENT = "staging" ,BASE_URL = "staging.example.com"}
+d1_databases =[{ binding = "DB" ,database_name = "hono-staging" , database_id = "eb9521ba-99"  , migrations_dir = "migrationsD1" }]
+
+
+[env.production]
+vars = { ENVIRONMENT = "production" ,BASE_URL = "example.com"}
+d1_databases =[{ binding = "DB" ,database_name = "hono-production" , database_id = "019b018774c4c4" , migrations_dir = "migrationsD1" }]
+
+
+
+# [[r2_buckets]]
+# binding = "MY_BUCKET"
+# bucket_name = "my-bucket"
+
