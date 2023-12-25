@@ -11,19 +11,8 @@ compatibility_flags = ["nodejs_compat"]
 # local_protocol = "http"
 
 
-
-
-
+[env.$ENVIRONMENT]
 vars = { ENVIRONMENT = "$ENVIRONMENT" ,BASE_URL = "$BASE_URL"}
 d1_databases =[{ binding = "DB" ,database_name = "$database_name" , database_id = "$database_id" , migrations_dir = "migrationsD1" }]
 
-
-
-
-
-
-# for env manage
-
-# [env.staging]
-# vars = { ENVIRONMENT = "staging" ,BASE_URL = "staging.example.com"}
-# d1_databases =[{ binding = "DB" ,database_name = "hono-staging" , database_id = "eb9521ba-99"  , migrations_dir = "migrationsD1" }]
+# ......
