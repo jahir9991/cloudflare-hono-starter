@@ -1,0 +1,1 @@
+ALTER TABLE `users` RENAME COLUMN `int_modifiers` TO `is_active`;

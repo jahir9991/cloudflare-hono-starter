@@ -1,0 +1,22 @@
+on:
+  push:
+    branches:
+      - master
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Genarate .toml
+        run: |
+          cp prod.wrangler.toml wrangler.toml 
+
+      - name: Deploy
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: "${{ secrets.CF_ACCOUNT_ID }}"
+          command: deploy
+          environment: production

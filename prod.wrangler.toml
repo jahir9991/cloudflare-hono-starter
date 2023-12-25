@@ -1,0 +1,44 @@
+name = "hono"
+main = "src/index.ts"
+compatibility_date = "2023-01-01"
+# node_compat = true
+
+
+account_id = "556675f35212283cadf2ad1dbb0da3f0"
+
+
+[env.staging]
+vars = { ENVIRONMENT = "staging" ,BASE_URL = "staging.example.com"}
+d1_databases =[{ binding = "DB" ,database_name = "hono-staging" , database_id = "eb9521ba-93c0-42b3-af2d-6e438e2dcf99" , migrations_dir = "migrationsD1" }]
+
+
+[env.production]
+vars = { ENVIRONMENT = "production" ,BASE_URL = "example.com"}
+d1_databases =[{ binding = "DB" ,database_name = "hono-production" , database_id = "01ff53bc-21d6-47c2-bb4f-9b018774c4c4" , migrations_dir = "migrationsD1" }]
+
+
+
+
+
+
+# kv_namespaces = [
+#             { binding = "<BINDING_NAME>", id = "<KV_NAMESPACE_ID_PRODUCTION>" }
+# ]
+
+
+
+# [vars]
+# MY_VARIABLE = "production_value"
+
+# [[kv_namespaces]]
+# binding = "MY_KV_NAMESPACE"
+# account_id = "556675f35212283cadf2ad1dbb0da3f0"
+
+# [[r2_buckets]]
+# binding = "MY_BUCKET"
+# bucket_name = "my-bucket"
+
+# [[d1_databases]]
+# binding = "DB"
+# database_name = "my-database"
+# database_id = ""

@@ -1,0 +1,27 @@
+{
+  "version": "5",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1698873498392,
+      "tag": "0000_furry_puff_adder",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1698873569294,
+      "tag": "0001_thin_caretaker",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1698873702609,
+      "tag": "0002_fixed_psynapse",
+      "breakpoints": true
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+	"name": "cloudflare-worker-starter",
+	"version": "0.0.1",
+	"license": "Apache-2.0",
+	"scripts": {
+		"start": "wrangler dev src/index.ts --env staging ",
+		"deploy:production": "wrangler deploy --minify --env production  ",
+		"proxy": "wrangler dev node_modules/cfw-bindings-wrangler-bridge/worker.js --remote --env staging --ip 127.0.0.1 --port 8787",
+		"deploy:staging": "wrangler deploy --minify --env staging ",
+		"build:watch": "esbuild --bundle _worker.ts --format=esm --outfile=pages/_worker.js --watch",
+		"d1:gen": "drizzle-kit generate:sqlite --out migrationsD1 --schema=src/db/schemas",
+		"d1:mig:local": "wrangler d1 migrations apply medsir-staging --local",
+		"d1:mig:staging": "wrangler d1 migrations apply medsir-staging --env staging",
+		"d1:mig:production": "wrangler d1 migrations apply medsir-production --env production "
+	},
+	"devDependencies": {
+		"class-validator": "^0.14.0",
+		"hono": "^3.9.0",
+		"@cloudflare/workers-types": "^4.20230914.0",
+		"bcryptjs": "^2.4.3",
+		"cfw-bindings-wrangler-bridge": "^0.8.1",
+		"drizzle-kit": "^0.19.13",
+		"drizzle-orm": "^0.28.6",
+		"eslint-config-prettier": "^9.0.0",
+		"eslint-plugin-prettier": "^5.0.1",
+		"jose": "^5.0.1",
+		"prettier": "^3.0.3",
+		"wrangler": "^3.22.1",
+		"xlsx": "^0.18.5"
+	}
+}
