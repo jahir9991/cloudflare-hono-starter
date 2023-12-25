@@ -1,11 +1,11 @@
 {
   "version": "5",
   "dialect": "sqlite",
-  "id": "6ca19a33-b5c2-42e2-9d7b-04c763230d5b",
+  "id": "27e228c5-9327-41dd-9a49-e4f2cdce2f03",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
-    "user": {
-      "name": "user",
+    "users": {
+      "name": "users",
       "columns": {
         "id": {
           "name": "id",
@@ -52,8 +52,8 @@
           "autoincrement": false,
           "default": "'USER'"
         },
-        "int_modifiers": {
-          "name": "int_modifiers",
+        "is_active": {
+          "name": "is_active",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
@@ -77,22 +77,22 @@
         }
       },
       "indexes": {
-        "user_username_unique": {
-          "name": "user_username_unique",
+        "users_username_unique": {
+          "name": "users_username_unique",
           "columns": [
             "username"
           ],
           "isUnique": true
         },
-        "user_email_unique": {
-          "name": "user_email_unique",
+        "users_email_unique": {
+          "name": "users_email_unique",
           "columns": [
             "email"
           ],
           "isUnique": true
         },
-        "user_phoneNumber_unique": {
-          "name": "user_phoneNumber_unique",
+        "users_phoneNumber_unique": {
+          "name": "users_phoneNumber_unique",
           "columns": [
             "phoneNumber"
           ],
