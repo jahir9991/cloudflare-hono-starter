@@ -24,7 +24,9 @@ const app = new Hono<{ Bindings: AppBindings }>();
 app.use(cors());
 
 app.get('/', (context) => {
-	return context.json(context.env);
+	return context.json({
+		success: true
+	});
 });
 
 app.use('/*', InjectD1Middleware);
@@ -35,13 +37,11 @@ app.onError((err, c) => {
 	console.log('opopopo');
 
 	if (err instanceof HTTPException) {
-
-
 		return c.json(
 			{
 				success: false,
-				message: err.getResponse()??'wrong',
-				devMessage: err.getResponse()??'error...'
+				message: err.getResponse() ?? 'wrong',
+				devMessage: err.getResponse() ?? 'error...'
 				// error:err
 			},
 			{
