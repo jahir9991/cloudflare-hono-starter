@@ -4,64 +4,66 @@ import { Singleton } from 'src/app/utils/singleton.util';
 import { AppContext } from 'src/app/appBindings';
 import { UserService } from 'src/modules/user/user.service';
 
-// const log = (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
-// 	const originalMethod = descriptor.value;
-// 	console.log('originalMethod', originalMethod);
-// 	descriptor.value = function (...args: any[]) {
-// 		let msg: string;
-// 		// The decorated method's parameters will be passed in as args.
-// 		// We'll assume the decorated method might only have a single parameter,
-// 		// check to see if it's been passed in the method
-// 		if (args[0]) {
-// 			msg = `${propertyKey}, that has a parameter value: ${args[0]}`;
-// 		} else {
-// 			msg = `${propertyKey}`;
-// 		}
-// 		// Emit a message to the console
-// 		console.log(`Logger says - calling the method: ${msg}`);
-// 		// Execute the behavior originally programmed in
-// 		// the decorated method
-// 		const result = originalMethod.apply(this, args);
-// 		// if the decorated method returned a value when executed,
-// 		// capture that result
-// 		if (result) {
-// 			msg = `${propertyKey} and returned: ${JSON.stringify(result)}`;
-// 		} else {
-// 			msg = `${propertyKey}`;
-// 		}
-// 		// Having executed the decorated method's behavior, emit
-// 		// a message to the console report what happened
-// 		console.log(`Logger says - called the method: ${msg}`);
-// 		return result;
-// 	};
-// 	return descriptor;
-// };
-
 @Singleton
 export class UserController {
 	private readonly modelService: UserService = new UserService();
 
-	getAll: Handler = (context: AppContext) => {
-		return this.modelService.getAll(context);
+	getAll: Handler = async (context: AppContext) => {
+		try {
+			const options = {
+				limit: Number(context.req.query('limit') ?? 10),
+				page: Number(context.req.query('page') ?? 1),
+				q: context.req.query('q') ?? ''
+			};
+			const response = await this.modelService.getAll(context.env.MyDb, options);
+			return context.json(response);
+		} catch (error) {
+			throw error;
+		}
 	};
 
-	createOne: Handler = (context: AppContext) => {
-		return this.modelService.createOne(context);
+	createOne: Handler = async (context: AppContext) => {
+		try {
+			const response = await this.modelService.createOne(context);
+			return context.json(response);
+		} catch (error) {
+			throw error;
+		}
 	};
 
-	getOne: Handler = (context: AppContext) => {
-		return this.modelService.getOne(context);
+	getOne: Handler = async (context: AppContext) => {
+		try {
+			const response = await this.modelService.getOne(context.env.MyDb, context.req.param('id'));
+			return context.json(response);
+		} catch (error) {
+			throw error;
+		}
 	};
 
-	editOne: Handler = (context: AppContext) => {
-		return this.modelService.editOne(context);
+	editOne: Handler = async (context: AppContext) => {
+		try {
+			const response = await this.modelService.editOne(context);
+			return context.json(response);
+		} catch (error) {
+			throw error;
+		}
 	};
 
-	deleteOne: Handler = (context: AppContext) => {
-		return this.modelService.deleteOne(context);
+	deleteOne: Handler = async (context: AppContext) => {
+		try {
+			const response = await this.modelService.deleteOne(context);
+			return context.json(response);
+		} catch (error) {
+			throw error;
+		}
 	};
 
 	upload = async (context: AppContext) => {
-		return this.modelService.upload(context);
+		try {
+			const response = await this.modelService.upload(context);
+			return context.json(response);
+		} catch (error) {
+			throw error;
+		}
 	};
 }

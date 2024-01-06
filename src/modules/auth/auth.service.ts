@@ -7,7 +7,7 @@ import { HTTPException } from 'hono/http-exception';
 import { JWTHelper } from 'src/app/helpers/jwt.helper';
 import { Utils } from 'src/app/utils';
 import { Singleton } from 'src/app/utils/singleton.util';
-import { HttpStatus } from 'src/app/helpers/httpStatus.enum';
+import { HttpStatus } from 'src/app/exceptions/httpStatus.enum';
 
 @Singleton
 export class AuthService {
@@ -19,13 +19,14 @@ export class AuthService {
 
 			const payload = await context.req.json();
 
-			const existUser = await this.usersService.fineByUserName(payload.username, DB);
-
-			if (!existUser) {
+			const response = await this.usersService.fineByUserName(DB,payload.username);
+			const existUser = response.payload;
+			if (!response.success) {
 				throw new HTTPException(HttpStatus.UNAUTHORIZED, {
 					message: 'username is incorrect!'
 				});
 			} else {
+				
 				const isCorrectPassword = await BcryptHelper.compare(
 					payload.password,
 					`${existUser.password}`
@@ -36,6 +37,7 @@ export class AuthService {
 						message: 'Incorrect password!'
 					});
 			}
+
 			const accessToken = await JWTHelper.makeAccessToken({
 				user: {
 					id: existUser.id,

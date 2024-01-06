@@ -27,6 +27,7 @@
 		"xlsx": "^0.18.5"
 	},
 	"dependencies": {
+		"@graphql-yoga/plugin-response-cache": "^3.2.1",
 		"@hono/graphql-server": "^0.4.1",
 		"drizzle-kit": "^0.20.8",
 		"drizzle-orm": "^0.29.2",

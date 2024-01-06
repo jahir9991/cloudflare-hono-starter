@@ -6,16 +6,20 @@ import { eq, like, sql } from 'drizzle-orm';
 import { BcryptHelper } from 'src/app/helpers/bcrypt.helper';
 import { DrizzleD1Database } from 'drizzle-orm/d1';
 import { Singleton } from 'src/app/utils/singleton.util';
+import { MyHTTPException } from 'src/app/exceptions/MyHttpExceptions';
 
 @Singleton
 export class UserService {
-	getAll = async (context: AppContext) => {
+	getAll = async (
+		DB: DrizzleD1Database,
+		options: { q?: string; limit?: number; page?: number }
+	) => {
 		try {
-			const DB = context.env.MyDb;
+			console.log('getAll', options);
 
-			const searchTerm = context.req.query('q') ?? '';
-			const limit: number = Number(context.req.query('limit') ?? 10);
-			const page: number = Number(context.req.query('page') ?? 1);
+			const searchTerm = options.q ?? '';
+			const limit: number = Number(options.limit ?? 10);
+			const page: number = Number(options.page ?? 1);
 
 			const result = await DB.select()
 				.from(UserD1)
@@ -27,18 +31,45 @@ export class UserService {
 				.from(UserD1)
 				.where(like(UserD1.username, `%${searchTerm}%`));
 
-			return context.json({
+			return {
+				success: true,
 				meta: {
 					count,
 					page,
 					limit
 				},
 				payload: result
-			});
+			};
 		} catch (error) {
 			console.log(error);
 
-			return context.json({ error: error });
+			throw new MyHTTPException(400, {
+				message: 'something went Wrong',
+				devMessage: 'this is dev message'
+			});
+		}
+	};
+	getOne = async (DB: DrizzleD1Database, id: string) => {
+		try {
+			console.log('getOne', id);
+
+			const result = await DB.select().from(UserD1).where(eq(UserD1.id, id)).get();
+			console.log('result', result);
+
+			if (!result) {
+				// return { error: "no user found" },{status:404});
+
+				throw new HTTPException(404, { message: 'no user found' });
+			}
+			return {
+				success: true,
+				payload: result
+			};
+		} catch (error) {
+			const errorResponse = new Response('Unauthorized', {
+				status: 401
+			});
+			throw new HTTPException(401, { res: errorResponse });
 		}
 	};
 
@@ -51,36 +82,14 @@ export class UserService {
 
 			const result = await DB.insert(UserD1).values(payload).returning();
 
-			return context.json({
+			return {
+				success: true,
 				payload: result[0] ?? {}
-			});
+			};
 		} catch (error) {
 			console.log(error);
 
-			return context.json({ error: error });
-		}
-	};
-
-	getOne = async (context: AppContext) => {
-		try {
-			const DB = context.env.MyDb;
-			const id = context.req.param('id');
-			console.log('getOne', id);
-
-			const result = await DB.select().from(UserD1).where(eq(UserD1.id, id)).get();
-			console.log('result', result);
-
-			if (!result) {
-				// return context.json({ error: "no user found" },{status:404});
-
-				throw new HTTPException(401, { message: 'no user found' });
-			}
-			return context.json(result);
-		} catch (error) {
-			const errorResponse = new Response('Unauthorized', {
-				status: 401
-			});
-			throw new HTTPException(401, { res: errorResponse });
+			return { error: error };
 		}
 	};
 
@@ -96,10 +105,10 @@ export class UserService {
 				.returning()
 				.get();
 
-			return context.json({ payload: updatedData });
+			return { success: true, payload: updatedData };
 		} catch (error: any) {
 			console.log('err', error);
-			return context.json({ error: error.message }, { status: 400 });
+			throw new HTTPException(400, { message: error.message });
 		}
 	};
 
@@ -110,18 +119,19 @@ export class UserService {
 
 			const deletedData = await DB.delete(UserD1).where(eq(UserD1.id, id)).returning();
 
-			return context.json({
+			return {
+				success: true,
 				payload: deletedData[0] ?? {}
-			});
+			};
 		} catch (error: any) {
 			console.log('err', error);
-			return context.json({ error: error.message }, { status: 400 });
+			throw new HTTPException(400, { message: error.message });
 		}
 	};
 
-	upload = async (c) => {
+	upload = async (context) => {
 		try {
-			const body: any = await c.req.parseBody();
+			const body: any = await context.req.parseBody();
 			const ff: File = body['filed'];
 			const mm = await ff.arrayBuffer();
 			console.log(typeof mm);
@@ -133,26 +143,25 @@ export class UserService {
 
 				console.log('content', content);
 
-				return c.json({ payload: content });
+				return { success: true, payload: content };
 			}
-		} catch (error) {
+		} catch (error: any) {
 			console.error(error);
+			throw new HTTPException(400, { message: error.message });
 		}
 
-		return c.json({ payload: null });
-
-		//   console.log("body", body);
+		
 	};
-	fineByUserName = async (username: string, DB: DrizzleD1Database) => {
+	fineByUserName = async (DB: DrizzleD1Database,username: string, ) => {
 		try {
 			const existUser = await DB.select()
 				.from(UserD1)
 				.where(eq(sql`lower(${UserD1.username})`, username.toLowerCase()))
 				.get();
 
-			return existUser;
-		} catch (error) {
-			throw new HTTPException(404);
+			return { success: true, payload: existUser };
+		} catch (error: any) {
+			throw new HTTPException(404, { message: error.message });
 		}
 	};
 }
