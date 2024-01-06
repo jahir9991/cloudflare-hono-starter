@@ -6,11 +6,10 @@ import { setCookie } from 'hono/cookie';
 import { cors } from 'hono/cors';
 import { HTTPException } from 'hono/http-exception';
 import { AuthModule } from 'src/modules/auth/auth.module';
-import { createYoga, createSchema, useLogger } from 'graphql-yoga';
 
-import { schema } from './gq/gqSchemas';
+import { GraphQLServer } from './graphQL/graphQL.server';
 import { MyHTTPException } from './app/exceptions/MyHttpExceptions';
-import { useResponseCache } from '@graphql-yoga/plugin-response-cache';
+import { PostModule } from './modules/post/post.module';
 const app = new Hono<{ Bindings: AppBindings }>();
 
 // app.use(
@@ -34,34 +33,18 @@ app.get('/', (context) => {
 });
 
 app.use('/*', InjectD1Middleware);
-app.use('/graphql/*', async (context: any) => {
-	return createYoga({
-		schema,
-		context,
-		landingPage: false,
-		multipart: true,
-		cors:true,
-		logging: 'debug',
-		
-		plugins: [
-			
-			useResponseCache({
-				// global cache
-				session: () => null,
-				ttl: 2_000,
-			  })
-		]
-	}).handle(context.req, context);
-});
+app.use('/graphql/*', GraphQLServer);
 
 app.route('/users', new UserModule().route);
+app.route('/posts', new PostModule().route);
+
 app.route('/auth', new AuthModule().route);
 
 app.notFound((c) => {
 	return c.text('Custom 404 Message', 404);
 });
 
-app.onError((err, c) => {
+app.onError((err: any, c) => {
 	console.log('calling on error');
 
 	if (err instanceof MyHTTPException) {

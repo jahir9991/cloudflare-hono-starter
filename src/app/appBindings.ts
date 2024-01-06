@@ -3,7 +3,7 @@ import { Context } from "hono";
 
 export type AppBindings = {
     DB: D1Database,
-    MyDb:DrizzleD1Database
+    D1DB:DrizzleD1Database
   }
 
 

@@ -1,3 +1,16 @@
+CREATE TABLE `posts` (
+	`id` text PRIMARY KEY NOT NULL,
+	`title` text NOT NULL,
+	`description` text DEFAULT null,
+	`is_active` integer DEFAULT true NOT NULL,
+	`created_at` text DEFAULT CURRENT_TIMESTAMP,
+	`created_by` text,
+	`updated_at` text DEFAULT CURRENT_TIMESTAMP,
+	`updated_by` text,
+	`deleted_at` text,
+	`deleted_by` text
+);
+--> statement-breakpoint
 CREATE TABLE `users` (
 	`id` text PRIMARY KEY NOT NULL,
 	`username` text,
@@ -7,7 +20,11 @@ CREATE TABLE `users` (
 	`role` text DEFAULT 'USER' NOT NULL,
 	`is_active` integer DEFAULT true NOT NULL,
 	`created_at` text DEFAULT CURRENT_TIMESTAMP,
-	`deleted_at` text
+	`created_by` text,
+	`updated_at` text DEFAULT CURRENT_TIMESTAMP,
+	`updated_by` text,
+	`deleted_at` text,
+	`deleted_by` text
 );
 --> statement-breakpoint
 CREATE UNIQUE INDEX `users_username_unique` ON `users` (`username`);--> statement-breakpoint

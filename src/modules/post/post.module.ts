@@ -1,10 +1,10 @@
 import { Hono } from 'hono';
 import { Singleton } from 'src/app/utils/singleton.util';
-import { UserController } from 'src/modules/user/user.controller';
+import { PostController } from './post.controller';
 
 @Singleton
-export class UserModule {
-	private readonly modelController = new UserController();
+export class PostModule {
+	private readonly modelController = new PostController();
 	readonly route = new Hono();
 
 	constructor() {

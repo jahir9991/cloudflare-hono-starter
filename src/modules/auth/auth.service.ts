@@ -15,7 +15,7 @@ export class AuthService {
 
 	login = async (context: AppContext) => {
 		try {
-			const DB = context.env.MyDb;
+			const DB = context.env.D1DB;
 
 			const payload = await context.req.json();
 
@@ -72,7 +72,7 @@ export class AuthService {
 	};
 	register = async (context: AppContext) => {
 		try {
-			const DB = context.env.MyDb;
+			const DB = context.env.D1DB;
 
 			const payload = await context.req.json();
 			payload.password = await BcryptHelper.hash(payload.password);

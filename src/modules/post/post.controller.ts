@@ -2,12 +2,12 @@ import { Handler } from 'hono';
 
 import { Singleton } from 'src/app/utils/singleton.util';
 import { AppContext } from 'src/app/appBindings';
-import { UserService } from 'src/modules/user/user.service';
-import { insertUserSchema } from 'src/db/schemas/User.entity';
+import { PostService } from './post.service';
+import { PostD1 } from 'src/db/schemas/Post.entity';
 
 @Singleton
-export class UserController {
-	private readonly modelService: UserService = new UserService();
+export class PostController {
+	private readonly modelService: PostService = new PostService();
 
 	getAll: Handler = async (context: AppContext) => {
 		try {
@@ -18,12 +18,7 @@ export class UserController {
 			};
 			const selectedFields = JSON.parse(context.req.query('fields') ?? '[]') ?? [];
 
-			const response = await this.modelService.getAll(
-				context.env.D1DB,
-				options,
-				selectedFields,
-				false
-			);
+			const response = await this.modelService.getAll(context.env.D1DB, options, selectedFields);
 			return context.json(response);
 		} catch (error) {
 			throw error;
@@ -52,7 +47,10 @@ export class UserController {
 
 	editOne: Handler = async (context: AppContext) => {
 		try {
-			const response = await this.modelService.editOne(context);
+			const DB = context.env.D1DB;
+			const id = context.req.param('id');
+			const newData = await context.req.json();
+			const response = await this.modelService.editOne(DB, id, newData);
 			return context.json(response);
 		} catch (error) {
 			throw error;
@@ -61,16 +59,9 @@ export class UserController {
 
 	deleteOne: Handler = async (context: AppContext) => {
 		try {
-			const response = await this.modelService.deleteOne(context);
-			return context.json(response);
-		} catch (error) {
-			throw error;
-		}
-	};
-
-	upload = async (context: AppContext) => {
-		try {
-			const response = await this.modelService.upload(context);
+			const DB = context.env.D1DB;
+			const id = context.req.param('id');
+			const response = await this.modelService.deleteOne(DB, id);
 			return context.json(response);
 		} catch (error) {
 			throw error;

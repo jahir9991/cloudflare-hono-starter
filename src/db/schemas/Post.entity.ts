@@ -1,13 +1,10 @@
 import { sql, InferSelectModel } from 'drizzle-orm';
 import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
-import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
-export const UserD1 = sqliteTable('users', {
+
+export const PostD1 = sqliteTable('posts', {
 	id: text('id').primaryKey(),
-	username: text('username').unique(),
-	email: text('email').unique().default(null),
-	phoneNumber: text('phoneNumber').unique().default(null),
-	password: text('password'),
-	role: text('role').notNull().default('USER'),
+	title: text('title').notNull(),
+	description: text('description').default(null),
 	isActive: integer('is_active', { mode: 'boolean' }).notNull().default(true),
 	createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
 	createdBy: text('created_by'),
@@ -17,5 +14,4 @@ export const UserD1 = sqliteTable('users', {
 	deletedBy: text('deleted_by')
 });
 
-export type UserD1Select = InferSelectModel<typeof UserD1>;
-export const insertUserSchema = createInsertSchema(UserD1);
+export type PostD1Select = InferSelectModel<typeof PostD1>;

@@ -1,101 +1,117 @@
-import { HTTPException } from 'hono/http-exception';
-import { UserD1 } from 'src/db/schemas/User.entity';
+import { UserD1, UserD1Select } from 'src/db/schemas/User.entity';
 import { AppContext } from 'src/app/appBindings';
 import * as XLSX from 'xlsx';
-import { eq, like, sql } from 'drizzle-orm';
+import { eq, like, sql, DrizzleError } from 'drizzle-orm';
 import { BcryptHelper } from 'src/app/helpers/bcrypt.helper';
 import { DrizzleD1Database } from 'drizzle-orm/d1';
 import { Singleton } from 'src/app/utils/singleton.util';
 import { MyHTTPException } from 'src/app/exceptions/MyHttpExceptions';
+import { getDbSelectkey } from 'src/app/utils/getSelectKey.util';
+import { SuccessResponse } from 'src/app/responses/success.response';
 
 @Singleton
 export class UserService {
 	getAll = async (
 		DB: DrizzleD1Database,
-		options: { q?: string; limit?: number; page?: number }
-	) => {
+		options: { q?: string; limit?: number; page?: number },
+		dbSelectKeys?: string[],
+		withMeta: boolean = true
+	): Promise<SuccessResponse> => {
 		try {
-			console.log('getAll', options);
-
 			const searchTerm = options.q ?? '';
 			const limit: number = Number(options.limit ?? 10);
 			const page: number = Number(options.page ?? 1);
 
-			const result = await DB.select()
+			const payloadQ = DB.select(getDbSelectkey(dbSelectKeys, UserD1))
 				.from(UserD1)
 				.where(like(UserD1.username, `%${searchTerm}%`))
 				.limit(limit)
 				.offset((page - 1) * limit);
 
-			const [{ count }] = await DB.select({ count: sql<number>`count(*)` })
+			const countQ = DB.select({ count: sql<number>`count(*)` })
 				.from(UserD1)
 				.where(like(UserD1.username, `%${searchTerm}%`));
 
-			return {
-				success: true,
-				meta: {
-					count,
+			const batchResponse = await DB.batch([payloadQ, ...(withMeta ? [countQ] : [])]);
+
+			let meta;
+
+			if (withMeta) {
+				const [{ count: total }] = batchResponse[1];
+
+				meta = {
+					total,
 					page,
 					limit
-				},
-				payload: result
-			};
-		} catch (error) {
-			console.log(error);
+				};
+			}
 
+			const rt = {
+				success: true,
+				message: 'success',
+				...(meta && { meta }),
+				payload: batchResponse[0]
+			};
+
+			return rt;
+		} catch (error: any) {
 			throw new MyHTTPException(400, {
 				message: 'something went Wrong',
-				devMessage: 'this is dev message'
+				devMessage: error.message,
+				error: error.stack
 			});
 		}
 	};
-	getOne = async (DB: DrizzleD1Database, id: string) => {
+	getOne = async (DB: DrizzleD1Database, id: string): Promise<SuccessResponse> => {
 		try {
 			console.log('getOne', id);
 
 			const result = await DB.select().from(UserD1).where(eq(UserD1.id, id)).get();
 			console.log('result', result);
 
-			if (!result) {
-				// return { error: "no user found" },{status:404});
-
-				throw new HTTPException(404, { message: 'no user found' });
-			}
 			return {
+				message: result ? 'success' : 'no data found',
 				success: true,
-				payload: result
+				payload: result ?? null
 			};
 		} catch (error) {
-			const errorResponse = new Response('Unauthorized', {
-				status: 401
+			throw new MyHTTPException(400, {
+				message: 'something went Wrong',
+				devMessage: 'this is dev message',
+				error
 			});
-			throw new HTTPException(401, { res: errorResponse });
 		}
 	};
 
-	createOne = async (context: AppContext) => {
+	createOne = async (DB, payload): Promise<SuccessResponse> => {
 		try {
-			const DB = context.env.MyDb;
-
-			const payload = await context.req.json();
 			payload.password = await BcryptHelper.hash(payload.password);
 
 			const result = await DB.insert(UserD1).values(payload).returning();
 
 			return {
 				success: true,
+				message: 'success',
 				payload: result[0] ?? {}
 			};
-		} catch (error) {
-			console.log(error);
+		} catch (e: any) {
+			let error = {};
 
-			return { error: error };
+			if (e instanceof DrizzleError) {
+				error = e.cause;
+			}
+
+			throw new MyHTTPException(400, {
+				message: e.message ?? 'something went Wrong',
+				devMessage: e.message ?? 'this is dev message',
+				error: e
+			});
 		}
 	};
 
 	editOne = async (context: AppContext) => {
 		try {
-			const DB = context.env.MyDb;
+			const DB = context.env.D1DB;
 			const id = context.req.param('id');
 
 			const newData: typeof UserD1 = await context.req.json();
@@ -107,14 +123,17 @@ export class UserService {
 
 			return { success: true, payload: updatedData };
 		} catch (error: any) {
-			console.log('err', error);
-			throw new HTTPException(400, { message: error.message });
+			throw new MyHTTPException(400, {
+				message: 'something went Wrong',
+				devMessage: 'this is dev message',
+				error
+			});
 		}
 	};
 
 	deleteOne = async (context: AppContext) => {
 		try {
-			const DB = context.env.MyDb;
+			const DB = context.env.D1DB;
 			const id = context.req.param('id');
 
 			const deletedData = await DB.delete(UserD1).where(eq(UserD1.id, id)).returning();
@@ -125,7 +144,11 @@ export class UserService {
 			};
 		} catch (error: any) {
 			console.log('err', error);
-			throw new HTTPException(400, { message: error.message });
+			throw new MyHTTPException(400, {
+				message: 'something went Wrong',
+				devMessage: 'this is dev message',
+				error
+			});
 		}
 	};
 
@@ -147,12 +170,14 @@ export class UserService {
 			}
 		} catch (error: any) {
 			console.error(error);
-			throw new HTTPException(400, { message: error.message });
+			throw new MyHTTPException(400, {
+				message: 'something went Wrong',
+				devMessage: 'this is dev message',
+				error
+			});
 		}
-
-		
 	};
-	fineByUserName = async (DB: DrizzleD1Database,username: string, ) => {
+	fineByUserName = async (DB: DrizzleD1Database, username: string) => {
 		try {
 			const existUser = await DB.select()
 				.from(UserD1)
@@ -161,7 +186,11 @@ export class UserService {
 
 			return { success: true, payload: existUser };
 		} catch (error: any) {
-			throw new HTTPException(404, { message: error.message });
+			throw new MyHTTPException(400, {
+				message: 'something went Wrong',
+				devMessage: 'this is dev message',
+				error
+			});
 		}
 	};
 }
