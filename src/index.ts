@@ -6,8 +6,23 @@ import { setCookie } from 'hono/cookie';
 import { cors } from 'hono/cors';
 import { HTTPException } from 'hono/http-exception';
 import { AuthModule } from 'src/modules/auth/auth.module';
+import { createYoga, createSchema } from 'graphql-yoga';
+
+import gqSchema from './gqSchema';
 
 const app = new Hono<{ Bindings: AppBindings }>();
+
+const yoga = createYoga({
+	schema: createSchema({
+		typeDefs: gqSchema,
+		resolvers: {
+			Query: {
+				name: () => 'John',
+				age: () => 18
+			}
+		}
+	})
+});
 
 // app.use(
 //     "/*",
@@ -23,6 +38,10 @@ const app = new Hono<{ Bindings: AppBindings }>();
 //   );
 app.use(cors());
 
+app.use('/gq/*', async (context: any) => {
+	return yoga.handle(context.req, {});
+});
+
 app.get('/', (context) => {
 	return context.json({
 		success: true
@@ -34,8 +53,6 @@ app.route('/users', new UserModule().route);
 app.route('/auth', new AuthModule().route);
 
 app.onError((err, c) => {
-	console.log('opopopo');
-
 	if (err instanceof HTTPException) {
 		return c.json(
 			{

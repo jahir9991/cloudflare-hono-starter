@@ -23,11 +23,14 @@
 		"hono": "^3.11.10",
 		"jose": "^5.0.1",
 		"prettier": "^3.1.1",
-		"wrangler": "^3.22.1",
+		"wrangler": "^3.22.3",
 		"xlsx": "^0.18.5"
 	},
 	"dependencies": {
+		"@hono/graphql-server": "^0.4.1",
 		"drizzle-kit": "^0.20.8",
-		"drizzle-orm": "^0.29.2"
+		"drizzle-orm": "^0.29.2",
+		"graphql": "^16.8.1",
+		"graphql-yoga": "^5.1.1"
 	}
 }
