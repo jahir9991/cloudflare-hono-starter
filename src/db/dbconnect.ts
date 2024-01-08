@@ -7,7 +7,7 @@ import { AppContext } from 'src/app/appBindings';
 export const injectD1 = async (c:AppContext) => {
 	try {
 		if (c.env.DB) {
-			console.log('calling server d1');
+			console.log('calling server d1',Math.random());
 
 			c.env.D1DB = drizzle(c.env.DB, { schema: schemaD1, logger: true });
 		} else {

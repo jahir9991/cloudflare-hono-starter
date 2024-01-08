@@ -1,13 +1,14 @@
 import { Handler } from 'hono';
 
-import { Singleton } from 'src/app/utils/singleton.util';
 import { AppContext } from 'src/app/appBindings';
 import { PostService } from './post.service';
-import { PostD1 } from 'src/db/schemas/Post.entity';
+import { singleton, inject } from 'tsyringe';
 
-@Singleton
+@singleton()
 export class PostController {
-	private readonly modelService: PostService = new PostService();
+	// private readonly modelService: PostService = new PostService();
+
+	constructor(@inject('PostService') private readonly modelService: PostService) {}
 
 	getAll: Handler = async (context: AppContext) => {
 		try {

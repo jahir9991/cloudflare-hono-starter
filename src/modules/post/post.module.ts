@@ -1,13 +1,16 @@
 import { Hono } from 'hono';
-import { Singleton } from 'src/app/utils/singleton.util';
 import { PostController } from './post.controller';
+import { InjectD1Middleware } from 'src/app/middlewares/injectD1';
+import { singleton, inject, container } from 'tsyringe';
+import { PostService } from './post.service';
 
-@Singleton
+container.register('PostController', PostController);
+container.register('PostService', PostService);
+@singleton()
 export class PostModule {
-	private readonly modelController = new PostController();
-	readonly route = new Hono();
+	readonly route = new Hono().use(InjectD1Middleware);
 
-	constructor() {
+	constructor(@inject('PostController') private modelController: PostController) {
 		this.route.get('/', this.modelController.getAll);
 		this.route.get('/:id', this.modelController.getOne);
 

@@ -1,15 +1,16 @@
-import { AppContext } from 'src/app/appBindings';
 import { eq, like, sql } from 'drizzle-orm';
-import { BcryptHelper } from 'src/app/helpers/bcrypt.helper';
 import { DrizzleD1Database } from 'drizzle-orm/d1';
-import { Singleton } from 'src/app/utils/singleton.util';
+import { singleton } from 'tsyringe';
 import { MyHTTPException } from 'src/app/exceptions/MyHttpExceptions';
 import { getDbSelectkey } from 'src/app/utils/getSelectKey.util';
 import { SuccessResponse } from 'src/app/responses/success.response';
 import { PostD1 } from 'src/db/schemas/Post.entity';
 
-@Singleton
+@singleton()
 export class PostService {
+	constructor() {
+		console.log('PostService created..........');
+	}
 	getAll = async (
 		DB: DrizzleD1Database,
 		options: { q?: string; limit?: number; page?: number },
