@@ -17,7 +17,7 @@ jobs:
           ENVIRONMENT: staging
           BASE_URL: staging.example.com
           account_id: ${{ secrets.CF_ACCOUNT_ID }}
-          database_name: hono-staging
+          database_name: cloudflare_fullstack_db
           database_id: ${{ secrets.database_id_staging }}
 
       - name: Deploy

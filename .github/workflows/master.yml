@@ -17,7 +17,7 @@ jobs:
           ENVIRONMENT: production
           BASE_URL: production.example.com
           account_id: ${{ secrets.CF_ACCOUNT_ID }}
-          database_name: hono-production
+          database_name: cloudflare_fullstack_db
           database_id: ${{ secrets.database_id_production }}
 
       - name: Deploy
