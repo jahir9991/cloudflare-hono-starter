@@ -13,6 +13,7 @@ import { serveStatic } from 'hono/cloudflare-workers';
 import { setCookie } from 'hono/cookie';
 
 import { DI } from './app/utils/DI.util';
+import { UserController } from './modules/user/user.controller';
 const app = new Hono<{ Bindings: AppBindings }>();
 console.log(app);
 
@@ -46,10 +47,10 @@ app.use('/graphql/*', GraphQLServer);
 // console.log('server....init');
 app.route('/auth', DI.container.resolve(AuthModule).route);
 
-app.route('/users', DI.container.resolve(UserModule).route);
-
 app.route('/articles', DI.container.resolve(ArticleModule).route);
 app.route('/posts', DI.container.resolve(PostModule).route);
+
+app.route('/users', DI.container.resolve(UserModule).route);
 
 app.notFound((c) => {
 	return c.text('Custom 404 Message', 404);

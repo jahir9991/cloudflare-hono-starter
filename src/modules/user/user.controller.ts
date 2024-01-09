@@ -6,7 +6,7 @@ import { DI } from 'src/app/utils/DI.util';
 
 @DI.singleton()
 export class UserController {
-	private readonly modelService = DI.container.resolve(UserService);
+	constructor(@DI.inject('UserService') private modelService: UserService) {}
 
 	getAll: Handler = async (context: AppContext) => {
 		try {
