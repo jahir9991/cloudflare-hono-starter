@@ -15,6 +15,7 @@ jobs:
           echo "$(cat ./wrangler.toml)"
         env:
           ENVIRONMENT: staging
+          ENV_SET: '[env.staging]'
           BASE_URL: staging.example.com
           account_id: ${{ secrets.CF_ACCOUNT_ID }}
           database_name: cloudflare_fullstack_db

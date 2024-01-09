@@ -1,3 +1,20 @@
+
+
+# CloudFlare graphql D1 drizzle starter with honojs
+
+
+
+# LIVE DEMO 
+
+[`LIVE DEMO::https://hono.loox.workers.dev/graphql`](https://hono.loox.workers.dev/graphql?query=%7B%0A++users%28q%3A+%22%22%2C+limit%3A+10%2C+page%3A+1%29+%7B%0A++++success%0A++++message%0A++++meta+%7B%0A++++++total%0A++++++page%0A++++++limit%0A++++%7D%0A++++payload+%7B%0A++++++id%0A++++++email%0A++++++username%0A++++++phoneNumber%0A++++++role%0A++++++isActive%0A++++++createdAt%0A++++%7D%0A++%7D%0A++posts%28q%3A+%22%22%2C+limit%3A+10%2C+page%3A+1%29+%7B%0A++++success%0A++++message%0A++++meta+%7B%0A++++++total%0A++++++page%0A++++++limit%0A++++%7D%0A++++payload+%7B%0A++++++id%0A++++++title%0A++++++description%0A++++++isActive%0A++++++createdAt%0A++++%7D%0A++%7D%0A%7D)
+
+
+
+
+
+
+
+
 ```
 #example.wrangler.toml
 
