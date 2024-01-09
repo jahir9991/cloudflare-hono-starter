@@ -3,16 +3,15 @@
 	"version": "0.0.1",
 	"license": "Apache-2.0",
 	"scripts": {
-		"start": "wrangler dev src/index.ts --remote --env staging ",
+		"start": "wrangler dev src/index.ts --remote --env dev ",
 		"deploy:production": "wrangler deploy --minify --env production  ",
-		"proxy": "wrangler dev node_modules/cfw-bindings-wrangler-bridge/worker/index.js --remote --env staging --ip 127.0.0.1 --port 8787",
-		"deploy:staging": "wrangler deploy --minify --env staging ",
+		"proxy": "wrangler dev node_modules/cfw-bindings-wrangler-bridge/worker/index.js --remote --env dev --ip 127.0.0.1 --port 8787",
+		"deploy:dev": "wrangler deploy --minify --env dev ",
 		"build:watch": "esbuild --bundle _worker.ts --format=esm --outfile=pages/_worker.js --watch",
 		"d1:gen": "drizzle-kit generate:sqlite --out migrationsD1 --schema=src/db/schemas/index.ts",
-		"d1:mig:local": "wrangler d1 migrations apply hono-staging --local",
-		"d1:mig:staging": "wrangler d1 migrations apply hono-staging --env staging",
-		"d1:mig:production": "wrangler d1 migrations apply hono-production --env production ",
-		"up": "drizzle-kit up:sqlite --schema=src/db/schemas"
+		"d1:mig:local": "wrangler d1 migrations apply cloudflare_fullstack_db --local",
+		"d1:mig:dev": "wrangler d1 migrations apply cloudflare_fullstack_db --env dev",
+		"d1:mig:production": "wrangler d1 migrations apply cloudflare_fullstack_db --env production "
 	},
 	"devDependencies": {
 		"@cloudflare/workers-types": "^4.20230914.0",
