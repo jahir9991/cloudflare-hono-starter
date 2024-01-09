@@ -3,9 +3,9 @@
 	"version": "0.0.1",
 	"license": "Apache-2.0",
 	"scripts": {
-		"start": "wrangler dev src/index.ts --remote --env staging ",
+		"start": "wrangler dev src/index.ts --remote --env staging  --experimental-local ",
 		"deploy:production": "wrangler deploy --minify --env production  ",
-		"proxy": "wrangler dev node_modules/cfw-bindings-wrangler-bridge/worker/index.js --remote --env staging --ip 127.0.0.1 --port 8787",
+		"proxy": "wrangler dev node_modules/cfw-bindings-wrangler-bridge/worker/index.js --remote --env staging --ip 127.0.0.1 --port 8787  --experimental-local",
 		"deploy:staging": "wrangler deploy --minify --env staging ",
 		"build:watch": "esbuild --bundle _worker.ts --format=esm --outfile=pages/_worker.js --watch",
 		"d1:gen": "drizzle-kit generate:sqlite --out migrationsD1 --schema=src/db/schemas/index.ts",

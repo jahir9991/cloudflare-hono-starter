@@ -55,6 +55,7 @@ export class UserService {
 
 			return rt;
 		} catch (error: any) {
+			console.log('🚀 ~ UserService ~ error:', error);
 			throw new MyHTTPException(400, {
 				message: 'something went Wrong',
 				devMessage: error.message,
@@ -75,6 +76,8 @@ export class UserService {
 				payload: result ?? null
 			};
 		} catch (error) {
+			console.log('🚀 ~ UserService ~ getOne= ~ error:', error);
+
 			throw new MyHTTPException(400, {
 				message: 'something went Wrong',
 				devMessage: 'this is dev message',
