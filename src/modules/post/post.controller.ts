@@ -2,13 +2,11 @@ import { Handler } from 'hono';
 
 import { AppContext } from 'src/app/appBindings';
 import { PostService } from './post.service';
-import { singleton, inject } from 'tsyringe';
+import { DI } from 'src/app/utils/DI.util';
 
-@singleton()
+@DI.singleton()
 export class PostController {
-	// private readonly modelService: PostService = new PostService();
-
-	constructor(@inject('PostService') private readonly modelService: PostService) {}
+	constructor(@DI.inject('PostService') private readonly modelService: PostService) {}
 
 	getAll: Handler = async (context: AppContext) => {
 		try {

@@ -1,9 +1,9 @@
 import { Handler } from 'hono';
 import { AppContext } from 'src/app/appBindings';
 import { AuthService } from 'src/modules/auth/auth.service';
-import { Singleton } from 'src/app/utils/singleton.util';
+import { DI } from 'src/app/utils/DI.util';
 
-@Singleton
+@DI.singleton()
 export class AuthController {
 	private readonly authService: AuthService = new AuthService();
 

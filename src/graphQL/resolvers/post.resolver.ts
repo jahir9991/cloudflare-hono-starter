@@ -1,13 +1,16 @@
 import { GraphQLError, GraphQLResolveInfo } from 'graphql';
+import { DI } from 'src/app/utils/DI.util';
 import { getGraphQlField } from 'src/app/utils/getGraphQlFeild.util';
 import { PostService } from 'src/modules/post/post.service';
+
+const modelService = DI.container.resolve(PostService);
 
 const getAll = async (_, arg, context, info: GraphQLResolveInfo) => {
 	try {
 		const selectedFields = getGraphQlField(info.fieldNodes[0].selectionSet);
 		console.log(selectedFields);
 
-		const result = await new PostService().getAll(
+		const result = await modelService.getAll(
 			context.env.D1DB,
 			{
 				q: arg.q,
@@ -26,10 +29,10 @@ const getAll = async (_, arg, context, info: GraphQLResolveInfo) => {
 
 const getOne = async (c, arg, context, info) => {
 	try {
-		const result = await new PostService().getOne(context.env.D1DB, arg.id);
+		const result = await modelService.getOne(context.env.D1DB, arg.id);
 
 		return result;
-	} catch (error:any) {
+	} catch (error: any) {
 		console.log(error);
 
 		throw new GraphQLError(error.message);

@@ -1,15 +1,13 @@
 import { drizzle } from 'drizzle-orm/d1';
 import { D1Database$ } from 'cfw-bindings-wrangler-bridge';
-import { schemaD1 } from './schemas';
-import { DefaultLogger } from 'drizzle-orm';
 import { AppContext } from 'src/app/appBindings';
 
-export const injectD1 = async (c:AppContext) => {
+export const injectD1 = async (c: AppContext) => {
 	try {
 		if (c.env.DB) {
-			console.log('calling server d1',Math.random());
+			console.log('calling server d1', Math.random());
 
-			c.env.D1DB = drizzle(c.env.DB, { schema: schemaD1, logger: true });
+			c.env.D1DB = drizzle(c.env.DB);
 		} else {
 			console.log('calling local');
 

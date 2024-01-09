@@ -6,12 +6,12 @@ import { UserService } from 'src/modules/user/user.service';
 import { HTTPException } from 'hono/http-exception';
 import { JWTHelper } from 'src/app/helpers/jwt.helper';
 import { Utils } from 'src/app/utils';
-import { Singleton } from 'src/app/utils/singleton.util';
 import { HttpStatus } from 'src/app/exceptions/httpStatus.enum';
+import { DI } from 'src/app/utils/DI.util';
 
-@Singleton
+@DI.singleton()
 export class AuthService {
-	private readonly usersService: UserService = new UserService();
+	private readonly userService: UserService = DI.container.resolve(UserService);
 
 	login = async (context: AppContext) => {
 		try {
@@ -19,14 +19,13 @@ export class AuthService {
 
 			const payload = await context.req.json();
 
-			const response = await this.usersService.fineByUserName(DB,payload.username);
+			const response = await this.userService.fineByUserName(DB, payload.username);
 			const existUser = response.payload;
 			if (!response.success) {
 				throw new HTTPException(HttpStatus.UNAUTHORIZED, {
 					message: 'username is incorrect!'
 				});
 			} else {
-				
 				const isCorrectPassword = await BcryptHelper.compare(
 					payload.password,
 					`${existUser.password}`

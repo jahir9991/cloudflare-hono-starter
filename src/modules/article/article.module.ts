@@ -1,13 +1,14 @@
 import { Handler, Hono } from 'hono';
 import { ArticleController } from './article.controller';
-import { singleton, injectable, autoInjectable, inject, container } from 'tsyringe';
-container.register('ArticleController', ArticleController);
+import { DI } from 'src/app/utils/DI.util';
 
-@singleton()
+DI.container.register('ArticleController', ArticleController);
+
+@DI.singleton()
 export class ArticleModule {
 	readonly route = new Hono();
 
-	constructor(@inject('ArticleController') private articleController: ArticleController) {
+	constructor(@DI.inject('ArticleController') private articleController: ArticleController) {
 		this.route.get('/', this.articleController.getAll);
 	}
 }

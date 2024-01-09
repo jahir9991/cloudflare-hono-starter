@@ -8,7 +8,7 @@
 		"proxy": "wrangler dev node_modules/cfw-bindings-wrangler-bridge/worker/index.js --remote --env staging --ip 127.0.0.1 --port 8787",
 		"deploy:staging": "wrangler deploy --minify --env staging ",
 		"build:watch": "esbuild --bundle _worker.ts --format=esm --outfile=pages/_worker.js --watch",
-		"d1:gen": "drizzle-kit generate:sqlite --out migrationsD1 --schema=src/db/schemas",
+		"d1:gen": "drizzle-kit generate:sqlite --out migrationsD1 --schema=src/db/schemas/index.ts",
 		"d1:mig:local": "wrangler d1 migrations apply hono-staging --local",
 		"d1:mig:staging": "wrangler d1 migrations apply hono-staging --env staging",
 		"d1:mig:production": "wrangler d1 migrations apply hono-production --env production ",
@@ -24,8 +24,9 @@
 		"hono": "^3.11.10",
 		"jose": "^5.0.1",
 		"prettier": "^3.1.1",
-		"wrangler": "^3.22.3",
-		"xlsx": "^0.18.5"
+		"wrangler": "^3.22.4",
+		"xlsx": "^0.18.5",
+		"tsx": "^3.12.2"
 	},
 	"dependencies": {
 		"@graphql-yoga/plugin-response-cache": "^3.2.1",

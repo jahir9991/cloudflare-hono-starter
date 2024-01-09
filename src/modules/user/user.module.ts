@@ -1,9 +1,9 @@
 import { Hono } from 'hono';
 import { InjectD1Middleware } from 'src/app/middlewares/injectD1';
-import { Singleton } from 'src/app/utils/singleton.util';
+import { DI } from 'src/app/utils/DI.util';
 import { UserController } from 'src/modules/user/user.controller';
 
-@Singleton
+@DI.singleton()
 export class UserModule {
 	private readonly modelController = new UserController();
 	readonly route = new Hono().use(InjectD1Middleware);

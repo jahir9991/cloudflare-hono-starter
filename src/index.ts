@@ -1,10 +1,7 @@
-import 'reflect-metadata';
-
 import { Hono } from 'hono';
 import { AppBindings, AppContext } from 'src/app/appBindings';
 import { UserModule } from 'src/modules/user/user.module';
 
-import { setCookie } from 'hono/cookie';
 import { cors } from 'hono/cors';
 import { HTTPException } from 'hono/http-exception';
 import { AuthModule } from 'src/modules/auth/auth.module';
@@ -13,10 +10,11 @@ import { MyHTTPException } from './app/exceptions/MyHttpExceptions';
 import { PostModule } from './modules/post/post.module';
 import { ArticleModule } from './modules/article/article.module';
 import { serveStatic } from 'hono/cloudflare-workers';
-import { container } from 'tsyringe';
-import { ArticleController } from './modules/article/article.controller';
-import { InjectD1Middleware } from './app/middlewares/injectD1';
+import { setCookie } from 'hono/cookie';
+
+import { DI } from './app/utils/DI.util';
 const app = new Hono<{ Bindings: AppBindings }>();
+console.log(app);
 
 // app.use(
 //     "/*",
@@ -46,12 +44,12 @@ app.get('/', (context) => {
 app.use('/graphql/*', GraphQLServer);
 
 // console.log('server....init');
+app.route('/auth', DI.container.resolve(AuthModule).route);
 
-app.route('/users', new UserModule().route);
-app.route('/auth', new AuthModule().route);
+app.route('/users', DI.container.resolve(UserModule).route);
 
-app.route('/articles', container.resolve(ArticleModule).route);
-app.route('/posts', container.resolve(PostModule).route);
+app.route('/articles', DI.container.resolve(ArticleModule).route);
+app.route('/posts', DI.container.resolve(PostModule).route);
 
 app.notFound((c) => {
 	return c.text('Custom 404 Message', 404);

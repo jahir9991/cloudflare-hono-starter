@@ -4,12 +4,12 @@ import * as XLSX from 'xlsx';
 import { eq, like, sql, DrizzleError } from 'drizzle-orm';
 import { BcryptHelper } from 'src/app/helpers/bcrypt.helper';
 import { DrizzleD1Database } from 'drizzle-orm/d1';
-import { Singleton } from 'src/app/utils/singleton.util';
 import { MyHTTPException } from 'src/app/exceptions/MyHttpExceptions';
 import { getDbSelectkey } from 'src/app/utils/getSelectKey.util';
 import { SuccessResponse } from 'src/app/responses/success.response';
+import { DI } from 'src/app/utils/DI.util';
 
-@Singleton
+@DI.singleton()
 export class UserService {
 	getAll = async (
 		DB: DrizzleD1Database,

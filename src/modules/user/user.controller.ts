@@ -1,13 +1,12 @@
 import { Handler } from 'hono';
 
-import { Singleton } from 'src/app/utils/singleton.util';
 import { AppContext } from 'src/app/appBindings';
 import { UserService } from 'src/modules/user/user.service';
-import { insertUserSchema } from 'src/db/schemas/User.entity';
+import { DI } from 'src/app/utils/DI.util';
 
-@Singleton
+@DI.singleton()
 export class UserController {
-	private readonly modelService: UserService = new UserService();
+	private readonly modelService = DI.container.resolve(UserService);
 
 	getAll: Handler = async (context: AppContext) => {
 		try {
@@ -17,12 +16,13 @@ export class UserController {
 				q: context.req.query('q') ?? ''
 			};
 			const selectedFields = JSON.parse(context.req.query('fields') ?? '[]') ?? [];
+			const withMeta = context.req.query('withmeta') === 'false' ? false : true;
 
 			const response = await this.modelService.getAll(
 				context.env.D1DB,
 				options,
 				selectedFields,
-				false
+				withMeta
 			);
 			return context.json(response);
 		} catch (error) {
