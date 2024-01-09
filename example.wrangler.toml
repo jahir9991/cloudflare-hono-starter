@@ -9,9 +9,10 @@ compatibility_flags = ["nodejs_compat"]
 # ip = "127.0.0.1"
 # port = 8081
 # local_protocol = "http"
+[placement]
+mode = "smart"
 
-
-[env.$ENVIRONMENT]
+# [env.$ENVIRONMENT]
 vars = { ENVIRONMENT = "$ENVIRONMENT" ,BASE_URL = "$BASE_URL"}
 d1_databases =[{ binding = "DB" ,database_name = "$database_name" , database_id = "$database_id" , migrations_dir = "migrationsD1" }]
 
