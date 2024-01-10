@@ -9,7 +9,7 @@ DI.container.register('UserService', UserService);
 
 @DI.singleton()
 export class UserModule {
-	readonly route = new Hono().use(InjectD1Middleware);
+	readonly route = new Hono();
 
 	constructor(@DI.inject('UserController') private modelController: UserController) {
 		this.route.get('/', this.modelController.getAll);

@@ -13,6 +13,7 @@ import { serveStatic } from 'hono/cloudflare-workers';
 import { setCookie } from 'hono/cookie';
 
 import { DI } from './app/utils/DI.util';
+import { InjectD1Middleware } from './app/middlewares/injectD1';
 import { UserController } from './modules/user/user.controller';
 const app = new Hono<{ Bindings: AppBindings }>();
 console.log(app);
@@ -50,6 +51,7 @@ app.route('/auth', DI.container.resolve(AuthModule).route);
 app.route('/articles', DI.container.resolve(ArticleModule).route);
 app.route('/posts', DI.container.resolve(PostModule).route);
 
+app.use('/users/*', InjectD1Middleware);
 app.route('/users', DI.container.resolve(UserModule).route);
 
 app.notFound((c) => {
