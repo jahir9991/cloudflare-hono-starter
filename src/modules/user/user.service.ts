@@ -81,7 +81,7 @@ export class UserService {
 			throw new MyHTTPException(400, {
 				message: 'something went Wrong',
 				devMessage: 'this is dev message',
-				error
+				error: JSON.stringify(error)
 			});
 		}
 	};
