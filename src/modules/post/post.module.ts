@@ -10,6 +10,10 @@ DI.container.register('PostService', PostService);
 export class PostModule {
 	readonly route = new Hono();
 
+	public get getRoute(): Hono {
+		return this.route;
+	}
+
 	constructor(@DI.inject('PostController') private modelController: PostController) {
 		this.route.get('/', this.modelController.getAll);
 		this.route.get('/:id', this.modelController.getOne);

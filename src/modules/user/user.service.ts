@@ -9,8 +9,16 @@ import { getDbSelectkey } from 'src/app/utils/getSelectKey.util';
 import { SuccessResponse } from 'src/app/responses/success.response';
 import { DI } from 'src/app/utils/DI.util';
 
+
 @DI.singleton()
 export class UserService {
+
+	constructor() {
+		console.log('UserService created..........');
+		
+
+	}
+
 	getAll = async (
 		DB: DrizzleD1Database,
 		options: { q?: string; limit?: number; page?: number },

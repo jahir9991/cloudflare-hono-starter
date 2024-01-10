@@ -4,19 +4,16 @@ import { DI } from 'src/app/utils/DI.util';
 import { UserController } from 'src/modules/user/user.controller';
 import { UserService } from './user.service';
 
-DI.container.register('UserController', UserController);
-DI.container.register('UserService', UserService);
+export const UserModule = () => {
+	DI.container.register('UserService', UserService);
+	const modelController = DI.container.resolve(UserController);
 
-@DI.singleton()
-export class UserModule {
-	readonly route = new Hono();
+	const route = new Hono();
 
-	constructor(@DI.inject('UserController') private modelController: UserController) {
-		this.route.get('/', this.modelController.getAll);
-		this.route.get('/:id', this.modelController.getOne);
+	route.get('/', modelController.getAll).get('/:id', modelController.getOne);
+	route.post('/', modelController.createOne);
+	route.put('/:id', modelController.editOne);
+	route.delete('/:id', modelController.deleteOne);
 
-		this.route.post('/', this.modelController.createOne);
-		this.route.put('/:id', this.modelController.editOne);
-		this.route.delete('/:id', this.modelController.deleteOne);
-	}
-}
+	return route;
+};

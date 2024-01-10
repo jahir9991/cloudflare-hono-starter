@@ -16,7 +16,9 @@ import { DI } from './app/utils/DI.util';
 import { InjectD1Middleware } from './app/middlewares/injectD1';
 import { timing } from 'hono/timing';
 const app = new Hono<{ Bindings: AppBindings }>();
-console.log(app);
+console.log("app",app);
+console.log('server....init');
+
 app.use('*', timing());
 
 // app.use(
@@ -46,11 +48,10 @@ app.get('/', (context) => {
 
 app.use('/graphql/*', GraphQLServer);
 
-// console.log('server....init');
 app.route('/auth', DI.container.resolve(AuthModule).route);
 app.route('/articles', DI.container.resolve(ArticleModule).route);
 app.route('/posts', DI.container.resolve(PostModule).route);
-app.route('/users', DI.container.resolve(UserModule).route);
+app.route('/users', UserModule());
 
 app.notFound((c) => {
 	return c.text('Custom 404 Message', 404);

@@ -23,7 +23,7 @@ const getAll = async (_, arg, context, info: GraphQLResolveInfo) => {
 
 		return result;
 	} catch (error) {
-		throw new GraphQLError(`User with id  not found.`);
+		throw new GraphQLError(error);
 	}
 };
 
