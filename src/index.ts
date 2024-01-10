@@ -15,8 +15,8 @@ import { setCookie } from 'hono/cookie';
 import { DI } from './app/utils/DI.util';
 import { InjectD1Middleware } from './app/middlewares/injectD1';
 import { timing } from 'hono/timing';
-const app = new Hono<{ Bindings: AppBindings }>();
-console.log("app",app);
+const app = new Hono<{ Bindings: AppBindings }>({ strict: false });
+console.log('app', app);
 console.log('server....init');
 
 app.use('*', timing());
