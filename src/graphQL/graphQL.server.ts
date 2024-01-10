@@ -10,8 +10,6 @@ import { injectD1 } from 'src/db/dbconnect';
 import { AppContext } from 'src/app/appBindings';
 
 export const GraphQLServer = async (context) => {
-	injectD1(context);
-
 	return createYoga({
 		schema: makeExecutableSchema({
 			resolvers: [userResolver, postResolver],

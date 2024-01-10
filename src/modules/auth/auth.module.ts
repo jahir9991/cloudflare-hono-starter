@@ -6,7 +6,7 @@ import { DI } from 'src/app/utils/DI.util';
 @DI.singleton()
 export class AuthModule {
 	private readonly authController = new AuthController();
-	readonly route = new Hono().use(InjectD1Middleware);
+	readonly route = new Hono();
 
 	constructor() {
 		this.route.post('/login', this.authController.login);

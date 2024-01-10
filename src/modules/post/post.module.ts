@@ -8,7 +8,7 @@ DI.container.register('PostController', PostController);
 DI.container.register('PostService', PostService);
 @DI.singleton()
 export class PostModule {
-	readonly route = new Hono().use(InjectD1Middleware);
+	readonly route = new Hono();
 
 	constructor(@DI.inject('PostController') private modelController: PostController) {
 		this.route.get('/', this.modelController.getAll);

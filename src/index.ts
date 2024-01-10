@@ -14,9 +14,10 @@ import { setCookie } from 'hono/cookie';
 
 import { DI } from './app/utils/DI.util';
 import { InjectD1Middleware } from './app/middlewares/injectD1';
-import { UserController } from './modules/user/user.controller';
+import { timing } from 'hono/timing';
 const app = new Hono<{ Bindings: AppBindings }>();
 console.log(app);
+app.use('*', timing());
 
 // app.use(
 //     "/*",
@@ -31,10 +32,6 @@ console.log(app);
 //     })
 //   );
 app.use(cors());
-// app.use(async (c: AppContext, next) => {
-// 	c.env.Container = weContainer;
-// 	await next();
-// });
 
 app.get('/', (context) => {
 	return context.json({
@@ -43,15 +40,16 @@ app.get('/', (context) => {
 });
 // app.use('/static/*', serveStatic({ root: './' }));
 
+['/graphql/*', '/auth/*', '/users/*', '/posts/*', '/articles/*'].forEach((routes) => {
+	app.use(routes, InjectD1Middleware);
+});
+
 app.use('/graphql/*', GraphQLServer);
 
 // console.log('server....init');
 app.route('/auth', DI.container.resolve(AuthModule).route);
-
 app.route('/articles', DI.container.resolve(ArticleModule).route);
 app.route('/posts', DI.container.resolve(PostModule).route);
-
-app.use('/users/*', InjectD1Middleware);
 app.route('/users', DI.container.resolve(UserModule).route);
 
 app.notFound((c) => {
